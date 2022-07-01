@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'taskeditor/css/style.css' %}"
+    />
+    <script
+      type="text/javascript"
+      src="{% static 'taskeditor/js/prism.js' %}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{% static 'taskeditor/js/script.js' %}"
+    ></script>
+    <title>Online Code Editor</title>
+  </head>
+
+  <body style="min-width: max-content" onload="update(this)">
+    <h1>Online Code editor</h1>
+    <hr />
+    <div class="editors">
+      <div>
+        <form method="POST" action="save/" enctype="multipart/form-data">
+          {% csrf_token %}
+          <textarea name="code" id="code" hidden>
+            {{p.para}}</textarea
+          ><br />
+          <label>Edit name:</label>
+          <input type="text" name="codename" value="{{p.name}}" />
+          <input type="submit" value="Save Code" onclick="transfer2()" />
+        </form>
+        <div class="main">
+          <textarea class="rownr" readonly>1</textarea>
+          <div style="position: relative; height: 520px">
+            <textarea
+              placeholder="Enter Python/C++ Source Code"
+              id="editing"
+              spellcheck="false"
+              onclick="selectionchanged(this);"
+              oninput="update(this); sync_scroll(this);"
+              onscroll="sync_scroll(this);"
+              onkeydown="check_tab(this, event);"
+              onkeyup="keyup(this,event);"
+            >
+{{p}}</textarea
+            >
+            <pre id="highlighting" aria-hidden="true">
+                <code class="language-py" id="highlighting-content">
+                <!-- &lt;span title=&quot;Start Typing&quot;&gt;Just start typing!&lt;/span&gt; -->
+                </code>
+            </pre>
+          </div>
+        </div>
+        <input id="sel_in" style="border-style: none; width: 100%" readonly />
+      </div>
+      <div style="align-self: center">
+        <form method="POST" action=" " enctype="multipart/form-data">
+          {% csrf_token %}
+          <textarea name="codetext" id="codetext" hidden></textarea>
+          <textarea name="inputtext" id="inputtext" hidden></textarea>
+          <input type="submit" value="Compile and Run" onclick="transfer()" />
+        </form>
+      </div>
+      <div>
+        <h2>Input:</h2>
+        <textarea
+          id="input-text"
+          style="width: 100%; height: 250px; resize: none; outline: none"
+        >
+{{i}}</textarea
+        >
+        <h2>Output:</h2>
+        <textarea
+          style="width: 100%; height: 250px; resize: none; outline: none"
+          readonly
+        >
+{{o}}</textarea
+        >
+      </div>
+      <div class="buttons">
+        <form method="POST" action="select/">
+          {% csrf_token %}
+          <label style="margin-right: 2px">Load file: </label>
+          <select name="code_name">
+            {% for x in plist %}
+            <option value="{{x.name}}">{{x.name}}</option>
+            {% endfor %}
+          </select>
+          <input type="submit" value="Select" style="margin-left: 65px" />
+        </form>
+        <br />
+        <p>OR</p>
+        <br />
+        <form method="POST" action="submit/" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="file" name="upload" value="Upload File" />
+          <input type="submit" value="Select" />
+        </form>
+      </div>
+    </div>
+  </body>
+  <script
+    type="text/javascript"
+    src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"
+  ></script>
+  <script
+    type="text/javascript"
+    src="{% static 'taskeditor/js/prism.js' %}"
+  ></script>
+  <script
+    type="text/javascript"
+    src="{% static 'taskeditor/js/script.js' %}"
+  ></script>
+</html>

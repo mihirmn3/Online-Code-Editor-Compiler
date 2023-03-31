@@ -13,33 +13,40 @@ def index(request: HttpRequest):
     if request.method == 'POST':
         x = request.POST.get('codetext')
         y = request.POST.get('inputtext')
-        xx = compile(x, y)
+        z = request.POST.get('lang')
+        xx = compile(x, y, z)
         if(len(p) > 0):
-            context = {'p': x, 'plist': p, 'i': y, 'o': xx}
+            context = {'p': x, 'plist': p, 'pname': p[len(p)-1].name, 'i': y, 'o': xx}
         else:
             print("yes")
             context = {'p': x, 'plist': '', 'i': y, 'o': xx}
     else:
         if(len(p) > 0):
-            context = {'p': p[len(p)-1].para, 'plist': p, 'i': y, 'o': x}
+            context = {'p': p[len(p)-1].para, 'pname': p[len(p)-1].name, 'plist': p, 'i': y, 'o': x}
         else:
             context = {'p': '', 'plist': '', 'i': y, 'o': x}
     return render(request, 'taskeditor/home.html', context)
 
 
-def compile(code, inp):
+def compile(code, inp, lang):
     fi = open('input.txt', 'w')
     fi.writelines(inp)
     fi.close()
-    os.system("python pyyfile.py < input.txt > output.txt")
-    f = open('pyyfile.py', 'w')
-    f.writelines(code)
-    f.close()
-    # f = open('code.cpp', 'w')
-    # f.writelines(code)
-    # f.close()
-    # os.system("g++ code.cpp -o oput")
-    # os.system("oput < input.txt > output.txt")
+    print(lang)
+    if lang == "python":
+        os.system("python3 pyyfile.py < input.txt > output.txt")
+        f = open('pyyfile.py', 'w')
+        f.writelines(code)
+        f.close()
+    elif lang == "cpp":
+        f = open('code.cpp', 'w')
+        f.writelines(code)
+        f.close()
+        os.system("g++ code.cpp -o oput")
+        print("yes")
+        os.system("./oput < input.txt > output.txt")
+    else:
+        return "Invalid language"
     op = ""
     f = open('output.txt', 'r')
     lst = f.readlines()

@@ -3,8 +3,8 @@ from django.db import models
 
 
 class richeditor(models.Model):
-    para = models.TextField()
     name = models.CharField(max_length=300, default="")
+    para = models.TextField()
 
     def __str__(self):
-        return self.para
+        return self.name
